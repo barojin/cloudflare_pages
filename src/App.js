@@ -5,22 +5,39 @@ import Table from './components/Table'
 
 class App extends Component{
   state = {
-    posts: []
+    posts: [],
+    url: "https://workers.barojins.workers.dev/"
+  }  
+  getPost = async () => {
+    try{
+      // const url = "http://127.0.0.1:8787";      
+      const reprensentation = await fetch(this.state.url)
+      const data = await reprensentation.json()
+      console.log("getPost data.posts", data.posts)
+      this.setState({        
+        posts: [...this.state.posts, ...data.posts]
+      })
+    } catch(e) {
+      console.log("getPost errer", e);
+    }
+    
   }
 
   componentDidMount(){
-    // fetch data
+    // fetch data    
+    this.getPost()
   }
-
+  
   putPost = async data => {
-    console.log(data, typeof data, " Here");
-    const url = "http://127.0.0.1:8787";
-    const resp = await fetch(url, {
-      method: "POST",
-      body: JSON.stringify({data}),
+    try{
+      // const url = "http://127.0.0.1:8787";
+      await fetch(this.state.url, {
+      method: "PUT",
+      body: JSON.stringify({ posts: this.state.posts}),
       headers: { 'Content-type': 'application/json'}
-  })
-  return resp.json()
+    })} catch(e){
+      console.log("putPost error", e);
+    }  
   }
 
   handleSubmit = (post) => {
@@ -41,6 +58,7 @@ class App extends Component{
         return i !== index
       }),
     })
+    this.putPost()
   }
 
   render(){

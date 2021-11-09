@@ -12,10 +12,26 @@ class App extends Component{
     // fetch data
   }
 
+  putPost = async data => {
+    console.log(data, typeof data, " Here");
+    const url = "http://127.0.0.1:8787";
+    const resp = await fetch(url, {
+      method: "POST",
+      body: JSON.stringify({data}),
+      headers: { 'Content-type': 'application/json'}
+  })
+  return resp.json()
+  }
+
   handleSubmit = (post) => {
-    this.setState({
-      posts: [...this.state.posts, post]
-    })
+    if (post){
+      this.setState({
+        posts: [...this.state.posts, post]
+      })
+      this.putPost(post)
+    } else {
+      console.log("Error handleSubmit")
+    }
   }
 
   removePost = (index) => {
@@ -35,7 +51,6 @@ class App extends Component{
         <PostForm handleSubmit={this.handleSubmit} />
         <Table posts={posts} removePost={this.removePost} />
       </div>
-
     )
   }
 }
